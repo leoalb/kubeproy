@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    io.kubernetes.service: redis
+  name: redis
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kubernetes.service: redis
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        io.kubernetes.network/owncloud-kubernetes-default: "true"
+        io.kubernetes.service: redis
+    spec:
+      containers:
+        - args:
+            - --databases
+            - "1"
+          image: redis:6
+          livenessProbe:
+            exec:
+              command:
+                - redis-cli
+                - ping
+            failureThreshold: 5
+            periodSeconds: 10
+            timeoutSeconds: 5
+          name: owncloud-redis
+          resources: {}
+          volumeMounts:
+            - mountPath: /data
+              name: redis
+      restartPolicy: Always
+      volumes:
+        - name: redis
+          persistentVolumeClaim:
+            claimName: redis
+status: {}

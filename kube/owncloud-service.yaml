@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+  labels:
+    io.kubernetes.service: owncloud
+  name: owncloud
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 80
+  selector:
+    io.kubernetes.service: owncloud
