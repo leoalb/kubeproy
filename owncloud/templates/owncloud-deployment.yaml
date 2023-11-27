@@ -18,7 +18,8 @@ spec:
         io.kubernetes.service: owncloud
     spec:
       containers:
-        - env:
+        - name: owncloud-server
+          env:
             - name: {{ .Values.owncloudEnv.AdminPass.name }}
               value: {{ .Values.owncloudEnv.AdminPass.value }}
             - name: {{ .Values.owncloudEnv.AdminUser.name }}
@@ -44,7 +45,6 @@ spec:
             - name: {{ .Values.owncloudEnv.TrustedDomains.name }}
               value: {{ .Values.owncloudEnv.TrustedDomains.value }}
               
-
           image: {{ .Values.owncloudEnv.image.repository }}:{{ .Values.owncloudEnv.image.version }}
           livenessProbe:
             exec:
@@ -53,17 +53,16 @@ spec:
             failureThreshold: 5
             periodSeconds: 30
             timeoutSeconds: 10
-          name: owncloud-server
           ports:
-            - containerPort: 8080
-              name: http
+            - name: http
+              containerPort: 8080
+              protocol: TCP
           resources: {}
           volumeMounts:
-            - mountPath: /mnt/data
-              name: files
+            - name: files
+              mountPath: /mnt/data
       restartPolicy: Always
       volumes:
         - name: files
           persistentVolumeClaim:
             claimName: files
-status: {}
