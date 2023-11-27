@@ -1,9 +1,13 @@
 apiVersion: v2
 name: owncloud
-description: A Helm chart for Kubernetes
+description: A Helm chart for ownCloud server in Kubernetes
 
 type: application
 
 version: 0.1.0
 
 appVersion: "1.16.0"
+
+maintainers:
+  - name: Leonardo Alberro
+    email: lalberro@fing.edu.uy
