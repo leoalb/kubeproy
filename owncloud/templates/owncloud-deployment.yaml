@@ -1,0 +1,69 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    io.kubernetes.service: owncloud
+  name: owncloud
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kubernetes.service: owncloud
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        io.kubernetes.network/owncloud-kubernetes-default: "true"
+        io.kubernetes.service: owncloud
+    spec:
+      containers:
+        - env:
+            - name: {{ .Values.owncloudEnv.AdminPass.name }}
+              value: {{ .Values.owncloudEnv.AdminPass.value }}
+            - name: {{ .Values.owncloudEnv.AdminUser.name }}
+              value: {{ .Values.owncloudEnv.AdminUser.value }}
+            - name: {{ .Values.owncloudEnv.DbHost.name }}
+              value: {{ .Values.owncloudEnv.DbHost.value }}
+            - name: {{ .Values.owncloudEnv.DbName.name }}
+              value: {{ .Values.owncloudEnv.DbName.value }}
+            - name: {{ .Values.owncloudEnv.DbPass.name }}
+              value: {{ .Values.owncloudEnv.DbPass.value }}
+            - name: {{ .Values.owncloudEnv.DbType.name }}
+              value: {{ .Values.owncloudEnv.DbType.value }}
+            - name: {{ .Values.owncloudEnv.DbUser.name }}
+              value: {{ .Values.owncloudEnv.DbUser.value }}
+            - name: {{ .Values.owncloudEnv.DbDomain.name }}
+              value: {{ .Values.owncloudEnv.DbDomain.value }}
+            - name: {{ .Values.owncloudEnv.MySqlUtf.name }}
+              value: "true"
+            - name: {{ .Values.owncloudEnv.RedisEn.name }}
+              value: "true"
+            - name: {{ .Values.owncloudEnv.RedisHost.name }}
+              value: {{ .Values.owncloudEnv.RedisHost.value }}
+            - name: {{ .Values.owncloudEnv.TrustedDomains.name }}
+              value: {{ .Values.owncloudEnv.TrustedDomains.value }}
+              
+
+          image: {{ .Values.owncloudEnv.image.repository }}:{{ .Values.owncloudEnv.image.version }}
+          livenessProbe:
+            exec:
+              command:
+                - /usr/bin/healthcheck
+            failureThreshold: 5
+            periodSeconds: 30
+            timeoutSeconds: 10
+          name: owncloud-server
+          ports:
+            - containerPort: 8080
+              name: http
+          resources: {}
+          volumeMounts:
+            - mountPath: /mnt/data
+              name: files
+      restartPolicy: Always
+      volumes:
+        - name: files
+          persistentVolumeClaim:
+            claimName: files
+status: {}

@@ -1,0 +1,58 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    io.kubernetes.service: mariadb
+  name: mariadb
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kubernetes.service: mariadb
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        io.kubernetes.network/owncloud-kubernetes-default: "true"
+        io.kubernetes.service: mariadb
+    spec:
+      containers:
+        - args:
+            - --max-allowed-packet=128M
+            - --innodb-log-file-size=64M
+          env:
+            - name: {{ .Values.mariaDb.env.autoUpgrade.name }}
+              value: "1"
+            - name: {{ .Values.mariaDb.env.mySql.db.name }}
+              value: {{ .Values.mariaDb.env.mySql.db.value }}
+            - name: {{ .Values.mariaDb.env.mySql.pass.name }}
+              value: {{ .Values.mariaDb.env.mySql.pass.value }}
+            - name: {{ .Values.mariaDb.env.mySql.rootPass.name }}
+              value: {{ .Values.mariaDb.env.mySql.rootPass.value }}
+            - name: {{ .Values.mariaDb.env.mySql.user.name }}
+              value: {{ .Values.mariaDb.env.mySql.user.value }}
+          image: {{ .Values.mariaDb.image.repository }}:{{ .Values.mariaDb.image.version }}
+          livenessProbe:
+            exec:
+              command:
+                - mysqladmin
+                - ping
+                - -u
+                - root
+                - --password=owncloud
+            failureThreshold: 5
+            periodSeconds: 10
+            timeoutSeconds: 5
+          name: owncloud-mariadb
+          resources: {}
+          volumeMounts:
+            - mountPath: /var/lib/mysql
+              name: mysql
+      restartPolicy: Always
+      volumes:
+        - name: mysql
+          persistentVolumeClaim:
+            claimName: mysql
+status: {}

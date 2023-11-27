@@ -1,12 +1,9 @@
 apiVersion: v2
 name: owncloud
-version: "0.0.0"
-description: ownCloud server
-sources:
-  - https://github.com/leoalb/kubeproy/tree/main
-dependencies: # A list of the chart requirements (optional)
-  - name: The name of the chart (nginx)
-    version: The version of the chart ("1.2.3")
-maintainers:
-  - name: Leonardo Alberro
-    email: lalberro@fing.edu.uy
+description: A Helm chart for Kubernetes
+
+type: application
+
+version: 0.1.0
+
+appVersion: "1.16.0"
