@@ -1,6 +1,4 @@
 # Default values for owncloud.
-# This is a YAML-formatted file.
-# Declare variables to be passed into your templates.
 
 replicaCount: 1
 
@@ -67,6 +65,25 @@ mariaDb:
   image:
     repository: mariadb
     version: "10.11"
+  name: owncloud-mariadb
+  restartPolicy: Always
+  replicas: 1
+  livenessProbe:
+    failureThreshold: 5
+    periodSeconds: 10
+    timeoutSeconds: 5
+
+redis:
+  name: owncloud-redis
+  restartPolicy: Always
+  replicas: 1
+  image:
+    repository: redis
+    version: "6"
+  livenessProbe:
+    failureThreshold: 5
+    periodSeconds: 10
+    timeoutSeconds: 5
 
 imagePullSecrets: []
 nameOverride: ""

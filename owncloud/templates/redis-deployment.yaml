@@ -5,7 +5,7 @@ metadata:
     io.kubernetes.service: redis
   name: redis
 spec:
-  replicas: 1
+  replicas: {{ .Values.redis.replicas }}
   selector:
     matchLabels:
       io.kubernetes.service: redis
@@ -21,21 +21,21 @@ spec:
         - args:
             - --databases
             - "1"
-          image: redis:6
+          image: {{ .Values.redis.image.repository }}:{{ .Values.redis.image.version }}
           livenessProbe:
             exec:
               command:
                 - redis-cli
                 - ping
-            failureThreshold: 5
-            periodSeconds: 10
-            timeoutSeconds: 5
-          name: owncloud-redis
+            failureThreshold: {{ .Values.redis.livenessProbe.failureThreshold }}
+            periodSeconds: {{ .Values.redis.livenessProbe.periodSeconds }}
+            timeoutSeconds: {{ .Values.redis.livenessProbe.timeoutSeconds }}
+          name: {{ .Values.redis.name }}
           resources: {}
           volumeMounts:
-            - mountPath: /data
-              name: redis
-      restartPolicy: Always
+            - name: redis
+              mountPath: /data
+      restartPolicy: {{ .Values.redis.restartPolicy }}
       volumes:
         - name: redis
           persistentVolumeClaim:

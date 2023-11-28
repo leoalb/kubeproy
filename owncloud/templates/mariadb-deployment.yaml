@@ -6,7 +6,7 @@ metadata:
     io.kubernetes.service: mariadb
   name: mariadb
 spec:
-  replicas: 1
+  replicas: {{ .Values.mariaDb.replicas }}
   selector:
     matchLabels:
       io.kubernetes.service: mariadb
@@ -42,15 +42,15 @@ spec:
                 - -u
                 - root
                 - --password=owncloud
-            failureThreshold: 5
-            periodSeconds: 10
-            timeoutSeconds: 5
-          name: owncloud-mariadb
+            failureThreshold: {{ .Values.mariaDb.livenessProbe.failureThreshold }}
+            periodSeconds: {{ .Values.mariaDb.livenessProbe.periodSeconds }}
+            timeoutSeconds: {{ .Values.mariaDb.livenessProbe.timeoutSeconds }}
+          name: {{ .Values.mariaDb.name }}
           resources: {}
           volumeMounts:
             - mountPath: /var/lib/mysql
               name: mysql
-      restartPolicy: Always
+      restartPolicy: {{ .Values.mariaDb.restartPolicy }}
       volumes:
         - name: mysql
           persistentVolumeClaim:
