@@ -2,24 +2,23 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    io.kubernetes.service: owncloud
+    appservice: owncloud
   name: owncloud
 spec:
   replicas: 1
   selector:
     matchLabels:
-      io.kubernetes.service: owncloud
+      appservice: owncloud
   strategy:
     type: Recreate
   template:
     metadata:
       labels:
-        io.kubernetes.network/owncloud-kubernetes-default: "true"
-        io.kubernetes.service: owncloud
+        net/default: "true"
+        appservice: owncloud
     spec:
       containers:
-        - name: owncloud-server
-          env:
+        - env:
             - name: {{ .Values.owncloudEnv.AdminPass.name }}
               value: {{ .Values.owncloudEnv.AdminPass.value }}
             - name: {{ .Values.owncloudEnv.AdminUser.name }}
@@ -34,8 +33,6 @@ spec:
               value: {{ .Values.owncloudEnv.DbType.value }}
             - name: {{ .Values.owncloudEnv.DbUser.name }}
               value: {{ .Values.owncloudEnv.DbUser.value }}
-            - name: {{ .Values.owncloudEnv.DbDomain.name }}
-              value: {{ .Values.owncloudEnv.DbDomain.value }}
             - name: {{ .Values.owncloudEnv.MySqlUtf.name }}
               value: "true"
             - name: {{ .Values.owncloudEnv.RedisEn.name }}
@@ -44,7 +41,6 @@ spec:
               value: {{ .Values.owncloudEnv.RedisHost.value }}
             - name: {{ .Values.owncloudEnv.TrustedDomains.name }}
               value: {{ .Values.owncloudEnv.TrustedDomains.value }}
-              
           image: {{ .Values.owncloudEnv.image.repository }}:{{ .Values.owncloudEnv.image.version }}
           livenessProbe:
             exec:
@@ -53,14 +49,13 @@ spec:
             failureThreshold: 5
             periodSeconds: 30
             timeoutSeconds: 10
+          name: owncloud-server
           ports:
-            - name: http
-              containerPort: 8080
+            - containerPort: 8080
               protocol: TCP
-          resources: {}
           volumeMounts:
-            - name: files
-              mountPath: /mnt/data
+            - mountPath: /mnt/data
+              name: files
       restartPolicy: Always
       volumes:
         - name: files

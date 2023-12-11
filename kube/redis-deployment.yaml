@@ -1,59 +1,55 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: owncloud-redis
   labels:
-    app: owncloud
+    appservice: redis
+  name: redis
 spec:
   ports:
-    - port: 6379
+    - name: service-redis
+      port: 6379
+      targetPort: 6379
   selector:
-    app: owncloud
-    tier: redis
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: redis-pv-claim
-  labels:
-    app: owncloud
-spec:
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: 1Gi
+    appservice: redis
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: owncloud-redis
   labels:
-    app: owncloud
+    appservice: redis
+  name: redis
 spec:
+  replicas: 1
   selector:
     matchLabels:
-      app: owncloud
-      tier: redis
+      appservice: redis
   strategy:
     type: Recreate
   template:
     metadata:
       labels:
-        app: owncloud
-        tier: redis
+        net/default: "true"
+        appservice: redis
     spec:
       containers:
-      - image: redis:6
-        name: redis
-        ports:
-        - containerPort: 6379
-          name: redis
-        volumeMounts:
+        - args:
+            - --databases
+            - "1"
+          image: redis:6
+          livenessProbe:
+            exec:
+              command:
+                - redis-cli
+                - ping
+            failureThreshold: 5
+            periodSeconds: 10
+            timeoutSeconds: 5
+          name: owncloud-redis
+          volumeMounts:
             - mountPath: /data
               name: redis
+      restartPolicy: Always
       volumes:
         - name: redis
           persistentVolumeClaim:
-            claimName: redis-pv-claim
-
+            claimName: redis

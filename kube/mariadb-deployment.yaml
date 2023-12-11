@@ -19,7 +19,7 @@ metadata:
     appservice: mariadb
   name: mariadb
 spec:
-  replicas: {{ .Values.mariaDb.replicas }}
+  replicas: 1
   selector:
     matchLabels:
       appservice: mariadb
@@ -36,17 +36,17 @@ spec:
             - --max-allowed-packet=128M
             - --innodb-log-file-size=64M
           env:
-            - name: {{ .Values.mariaDb.env.autoUpgrade.name }}
+            - name: MARIADB_AUTO_UPGRADE
               value: "1"
-            - name: {{ .Values.mariaDb.env.mySql.db.name }}
-              value: {{ .Values.mariaDb.env.mySql.db.value }}
-            - name: {{ .Values.mariaDb.env.mySql.pass.name }}
-              value: {{ .Values.mariaDb.env.mySql.pass.value }}
-            - name: {{ .Values.mariaDb.env.mySql.rootPass.name }}
-              value: {{ .Values.mariaDb.env.mySql.rootPass.value }}
-            - name: {{ .Values.mariaDb.env.mySql.user.name }}
-              value: {{ .Values.mariaDb.env.mySql.user.value }}
-          image: {{ .Values.mariaDb.image.repository }}:{{ .Values.mariaDb.image.version }}
+            - name: MYSQL_DATABASE
+              value: owncloud
+            - name: MYSQL_PASSWORD
+              value: owncloud
+            - name: MYSQL_ROOT_PASSWORD
+              value: owncloud
+            - name: MYSQL_USER
+              value: owncloud
+          image: mariadb:10.11
           livenessProbe:
             exec:
               command:
@@ -55,14 +55,14 @@ spec:
                 - -u
                 - root
                 - --password=owncloud
-            failureThreshold: {{ .Values.mariaDb.livenessProbe.failureThreshold }}
-            periodSeconds: {{ .Values.mariaDb.livenessProbe.periodSeconds }}
-            timeoutSeconds: {{ .Values.mariaDb.livenessProbe.timeoutSeconds }}
-          name: {{ .Values.mariaDb.name }}
+            failureThreshold: 5
+            periodSeconds: 10
+            timeoutSeconds: 5
+          name: owncloud-mariadb
           volumeMounts:
             - mountPath: /var/lib/mysql
               name: mysql
-      restartPolicy: {{ .Values.mariaDb.restartPolicy }}
+      restartPolicy: Always
       volumes:
         - name: mysql
           persistentVolumeClaim:

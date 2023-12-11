@@ -1,4 +1,8 @@
 resources:
-  - mysql-deployment.yaml
-  - redis-deployment.yaml
+  - files-persistentvolumeclaim.yaml
+  - mariadb-deployment.yaml
+  - mysql-persistentvolumeclaim.yaml
   - owncloud-deployment.yaml
+  - owncloud-service.yaml
+  - redis-deployment.yaml
+  - redis-persistentvolumeclaim.yaml

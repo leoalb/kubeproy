@@ -23,7 +23,7 @@ owncloudEnv:
     value: mysql
   DbUser:
     name: OWNCLOUD_DB_USERNAME
-    value: mysql
+    value: owncloud
   DbDomain:
     name: OWNCLOUD_DOMAIN
     value: localhost:8080
