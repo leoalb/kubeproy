@@ -1,0 +1,4 @@
+resources:
+  - mysql-deployment.yaml
+  - redis-deployment.yaml
+  - owncloud-deployment.yaml

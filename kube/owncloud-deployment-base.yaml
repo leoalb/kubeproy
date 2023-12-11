@@ -54,12 +54,6 @@ spec:
               value: admin
             - name: OWNCLOUD_DB_HOST
               value: mariadb
-            - name: OWNCLOUD_DB_PORT
-              value: "3306"
-            - name: OWNCLOUD_DB_PORT_NUMBER
-              value: "3306"
-            - name: MARIADB_PORT_NUMBER
-              value: "3306"
             - name: OWNCLOUD_DB_NAME
               value: owncloud
             - name: OWNCLOUD_DB_PASSWORD
@@ -76,9 +70,8 @@ spec:
               value: "true"
             - name: OWNCLOUD_REDIS_HOST
               value: redis
-            - name: OWNCLOUD_REDIS_PORT
-              value: "6379"
-
+            - name: OWNCLOUD_TRUSTED_DOMAINS
+              value: localhost
         ports:
         - containerPort: 80
           name: owncloud
