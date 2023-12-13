@@ -92,23 +92,23 @@ The command removes all the Kubernetes components associated with the chart and 
 
 | Name      | Description             | Default        |
 |:----------|:------------------------|:---------------|
-| `redis.name` | Description for value 1 | `defaultValue` |
-| `redis.containers.name` | Description for value 2 | `defaultValue` |
-| `redis.containers.volumeMounts.mountPath` | Description for value 2 | `defaultValue` |
-| `redis.containers.volumeMounts.name` | Description for value 2 | `defaultValue` |
-| `redis.containers.replicas` | Description for value 2 | `defaultValue` |
-| `redis.containers.image.repository` | Description for value 2 | `defaultValue` |
-| `redis.containers.image.version` | Description for value 2 | `defaultValue` |
-| `redis.containers.livenessProbe.failureThreshold` | Description for value 2 | `defaultValue` |
-| `redis.containers.livenessProbe.periodSeconds` | Description for value 2 | `defaultValue` |
-| `redis.containers.livenessProbe.timeoutSeconds` | Description for value 2 | `defaultValue` |
-| `redis.restartPolicy` | Description for value 2 | `defaultValue` |
-| `redis.volumes.name` | Description for value 2 | `defaultValue` |
-| `redis.volumes.persistentVolumeClaim.claimName` | Description for value 2 | `defaultValue` |
-| `redis.volumes.persistentVolumeClaim.storage` | Description for value 2 | `defaultValue` |
-| `redis.service.ports.name` | Description for value 2 | `defaultValue` |
-| `redis.service.ports.port` | Description for value 2 | `defaultValue` |
-| `redis.service.ports.targetPort` | Description for value 2 | `defaultValue` |
+| `redis.name` | Deployment name | `redis` |
+| `redis.containers.name` | Containers base name | `owncloud-redis` |
+| `redis.containers.volumeMounts.mountPath` | Volume mount-path  | `/data` |
+| `redis.containers.volumeMounts.name` | Volume name  | `redis` |
+| `redis.containers.replicas` | Number of replicas | `1` |
+| `redis.containers.image.repository` | Redis image repository | `redis` |
+| `redis.containers.image.version` | Redis image version | `6` |
+| `redis.containers.livenessProbe.failureThreshold` | Failure threshold of the liveness probe | `5` |
+| `redis.containers.livenessProbe.periodSeconds` | Period seconds of the liveness probe | `10` |
+| `redis.containers.livenessProbe.timeoutSeconds` | Timeout seconds of the liveness probe | `5` |
+| `redis.restartPolicy` | Restart policy | `Always` |
+| `redis.volumes.name` | Volume name | `redis` |
+| `redis.volumes.persistentVolumeClaim.claimName` | DB volume name | `redis` |
+| `redis.volumes.persistentVolumeClaim.storage` | DB volume size | `100Mi` |
+| `redis.service.ports.name` | Service port name | `service-redis` |
+| `redis.service.ports.port` | Service port number | `6379` |
+| `redis.service.ports.targetPort` | Service target port number | `6379` |
 
 ### mariaDb
 
