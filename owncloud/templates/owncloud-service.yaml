@@ -6,9 +6,9 @@ metadata:
   name: owncloud
 spec:
   ports:
-    - name: service-owncloud
-      port: 8080
-      targetPort: 8080
+    - name: {{ .Values.owncloud.service.ports.name }}
+      port: {{ .Values.owncloud.service.ports.port }}
+      targetPort: {{ .Values.owncloud.service.ports.targetPort }}
   selector:
     appservice: owncloud
-  type: LoadBalancer
+  type: {{ .Values.owncloud.service.type }}

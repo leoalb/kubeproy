@@ -6,8 +6,8 @@ metadata:
   name: mariadb
 spec:
   ports:
-    - name: service-mariadb
-      port: 3306
-      targetPort: 3306
+    - name: {{ .Values.mariaDb.service.ports.name }}
+      port: {{ .Values.mariaDb.service.ports.port }}
+      targetPort: {{ .Values.mariaDb.service.ports.targetPort }}
   selector:
     appservice: mariadb

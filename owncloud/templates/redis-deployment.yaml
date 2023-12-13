@@ -3,9 +3,9 @@ kind: Deployment
 metadata:
   labels:
     appservice: redis
-  name: redis
+  name: {{ .Values.redis.name }}
 spec:
-  replicas: 1
+  replicas: {{ .Values.redis.replicas }}
   selector:
     matchLabels:
       appservice: redis
@@ -21,21 +21,21 @@ spec:
         - args:
             - --databases
             - "1"
-          image: redis:6
+          image: {{ .Values.redis.containers.image.repository }}:{{ .Values.redis.containers.image.version }}
           livenessProbe:
             exec:
               command:
                 - redis-cli
                 - ping
-            failureThreshold: 5
-            periodSeconds: 10
-            timeoutSeconds: 5
-          name: owncloud-redis
+            failureThreshold: {{ .Values.redis.containers.livenessProbe.failureThreshold }}
+            periodSeconds: {{ .Values.redis.containers.livenessProbe.periodSeconds }}
+            timeoutSeconds: {{ .Values.redis.containers.livenessProbe.timeoutSeconds }}
+          name: {{ .Values.redis.containers.name }}
           volumeMounts:
-            - mountPath: /data
-              name: redis
-      restartPolicy: Always
+            - mountPath: {{ .Values.redis.containers.volumeMounts.mountPath }}
+              name: {{ .Values.redis.containers.volumeMounts.name }}
+      restartPolicy: {{ .Values.redis.restartPolicy }}
       volumes:
-        - name: redis
+        - name: {{ .Values.redis.volumes.name }}
           persistentVolumeClaim:
-            claimName: redis
+            claimName: {{ .Values.redis.volumes.persistentVolumeClaim.claimName }}

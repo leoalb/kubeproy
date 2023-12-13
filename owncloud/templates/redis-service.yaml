@@ -6,8 +6,8 @@ metadata:
   name: redis
 spec:
   ports:
-    - name: service-redis
-      port: 6379
-      targetPort: 6379
+    - name: {{ .Values.redis.service.ports.name }}
+      port: {{ .Values.redis.service.ports.port }}
+      targetPort: {{ .Values.redis.service.ports.targetPort }}
   selector:
     appservice: redis

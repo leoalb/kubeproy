@@ -5,12 +5,12 @@ metadata:
     appservice: owncloud
   name: owncloud
 spec:
-  replicas: 1
+  replicas: {{ .Values.owncloud.replicas }}
   selector:
     matchLabels:
       appservice: owncloud
   strategy:
-    type: Recreate
+    type: {{ .Values.owncloud.strategy.type }}
   template:
     metadata:
       labels:
@@ -19,45 +19,45 @@ spec:
     spec:
       containers:
         - env:
-            - name: {{ .Values.owncloudEnv.AdminPass.name }}
-              value: {{ .Values.owncloudEnv.AdminPass.value }}
-            - name: {{ .Values.owncloudEnv.AdminUser.name }}
-              value: {{ .Values.owncloudEnv.AdminUser.value }}
-            - name: {{ .Values.owncloudEnv.DbHost.name }}
-              value: {{ .Values.owncloudEnv.DbHost.value }}
-            - name: {{ .Values.owncloudEnv.DbName.name }}
-              value: {{ .Values.owncloudEnv.DbName.value }}
-            - name: {{ .Values.owncloudEnv.DbPass.name }}
-              value: {{ .Values.owncloudEnv.DbPass.value }}
-            - name: {{ .Values.owncloudEnv.DbType.name }}
-              value: {{ .Values.owncloudEnv.DbType.value }}
-            - name: {{ .Values.owncloudEnv.DbUser.name }}
-              value: {{ .Values.owncloudEnv.DbUser.value }}
-            - name: {{ .Values.owncloudEnv.MySqlUtf.name }}
+            - name: {{ .Values.owncloud.containers.env.AdminPass.name }}
+              value: {{ .Values.owncloud.containers.env.AdminPass.value }}
+            - name: {{ .Values.owncloud.containers.env.AdminUser.name }}
+              value: {{ .Values.owncloud.containers.env.AdminUser.value }}
+            - name: {{ .Values.owncloud.containers.env.DbHost.name }}
+              value: {{ .Values.owncloud.containers.env.DbHost.value }}
+            - name: {{ .Values.owncloud.containers.env.DbName.name }}
+              value: {{ .Values.owncloud.containers.env.DbName.value }}
+            - name: {{ .Values.owncloud.containers.env.DbPass.name }}
+              value: {{ .Values.owncloud.containers.env.DbPass.value }}
+            - name: {{ .Values.owncloud.containers.env.DbType.name }}
+              value: {{ .Values.owncloud.containers.env.DbType.value }}
+            - name: {{ .Values.owncloud.containers.env.DbUser.name }}
+              value: {{ .Values.owncloud.containers.env.DbUser.value }}
+            - name: {{ .Values.owncloud.containers.env.MySqlUtf.name }}
               value: "true"
-            - name: {{ .Values.owncloudEnv.RedisEn.name }}
+            - name: {{ .Values.owncloud.containers.env.RedisEn.name }}
               value: "true"
-            - name: {{ .Values.owncloudEnv.RedisHost.name }}
-              value: {{ .Values.owncloudEnv.RedisHost.value }}
-            - name: {{ .Values.owncloudEnv.TrustedDomains.name }}
-              value: {{ .Values.owncloudEnv.TrustedDomains.value }}
-          image: {{ .Values.owncloudEnv.image.repository }}:{{ .Values.owncloudEnv.image.version }}
+            - name: {{ .Values.owncloud.containers.env.RedisHost.name }}
+              value: {{ .Values.owncloud.containers.env.RedisHost.value }}
+            - name: {{ .Values.owncloud.containers.env.TrustedDomains.name }}
+              value: {{ .Values.owncloud.containers.env.TrustedDomains.value }}
+          image: {{ .Values.owncloud.containers.image.repository }}:{{ .Values.owncloud.containers.image.version }}
           livenessProbe:
             exec:
               command:
                 - /usr/bin/healthcheck
-            failureThreshold: 5
-            periodSeconds: 30
-            timeoutSeconds: 10
-          name: owncloud-server
+            failureThreshold: {{ .Values.owncloud.containers.livenessProbe.failureThreshold }}
+            periodSeconds: {{ .Values.owncloud.containers.livenessProbe.periodSeconds }}
+            timeoutSeconds: {{ .Values.owncloud.containers.livenessProbe.timeoutSeconds }}
+          name: {{ .Values.owncloud.containers.name }}
           ports:
-            - containerPort: 8080
-              protocol: TCP
+            - containerPort: {{ .Values.owncloud.containers.ports.containerPort }}
+              protocol: {{ .Values.owncloud.containers.ports.protocol }}
           volumeMounts:
-            - mountPath: /mnt/data
-              name: files
-      restartPolicy: Always
+            - mountPath: {{ .Values.owncloud.containers.volumeMounts.mountPath }}
+              name: {{ .Values.owncloud.containers.volumeMounts.name }}
+      restartPolicy: {{ .Values.owncloud.restartPolicy }}
       volumes:
-        - name: files
+        - name: {{ .Values.owncloud.volumes.name }}
           persistentVolumeClaim:
-            claimName: files
+            claimName: {{ .Values.owncloud.volumes.persistentVolumeClaim.claimName }}

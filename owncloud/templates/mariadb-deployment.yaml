@@ -10,7 +10,7 @@ spec:
     matchLabels:
       appservice: mariadb
   strategy:
-    type: Recreate
+    type: {{ .Values.mariaDb.strategy.type }}
   template:
     metadata:
       labels:
@@ -22,17 +22,17 @@ spec:
             - --max-allowed-packet=128M
             - --innodb-log-file-size=64M
           env:
-            - name: {{ .Values.mariaDb.env.autoUpgrade.name }}
+            - name: {{ .Values.mariaDb.containers.env.autoUpgrade.name }}
               value: "1"
-            - name: {{ .Values.mariaDb.env.mySql.db.name }}
-              value: {{ .Values.mariaDb.env.mySql.db.value }}
-            - name: {{ .Values.mariaDb.env.mySql.pass.name }}
-              value: {{ .Values.mariaDb.env.mySql.pass.value }}
-            - name: {{ .Values.mariaDb.env.mySql.rootPass.name }}
-              value: {{ .Values.mariaDb.env.mySql.rootPass.value }}
-            - name: {{ .Values.mariaDb.env.mySql.user.name }}
-              value: {{ .Values.mariaDb.env.mySql.user.value }}
-          image: {{ .Values.mariaDb.image.repository }}:{{ .Values.mariaDb.image.version }}
+            - name: {{ .Values.mariaDb.containers.env.mySql.db.name }}
+              value: {{ .Values.mariaDb.containers.env.mySql.db.value }}
+            - name: {{ .Values.mariaDb.containers.env.mySql.pass.name }}
+              value: {{ .Values.mariaDb.containers.env.mySql.pass.value }}
+            - name: {{ .Values.mariaDb.containers.env.mySql.rootPass.name }}
+              value: {{ .Values.mariaDb.containers.env.mySql.rootPass.value }}
+            - name: {{ .Values.mariaDb.containers.env.mySql.user.name }}
+              value: {{ .Values.mariaDb.containers.env.mySql.user.value }}
+          image: {{ .Values.mariaDb.containers.image.repository }}:{{ .Values.mariaDb.containers.image.version }}
           livenessProbe:
             exec:
               command:
@@ -41,15 +41,15 @@ spec:
                 - -u
                 - root
                 - --password=owncloud
-            failureThreshold: {{ .Values.mariaDb.livenessProbe.failureThreshold }}
-            periodSeconds: {{ .Values.mariaDb.livenessProbe.periodSeconds }}
-            timeoutSeconds: {{ .Values.mariaDb.livenessProbe.timeoutSeconds }}
-          name: {{ .Values.mariaDb.name }}
+            failureThreshold: {{ .Values.mariaDb.containers.livenessProbe.failureThreshold }}
+            periodSeconds: {{ .Values.mariaDb.containers.livenessProbe.periodSeconds }}
+            timeoutSeconds: {{ .Values.mariaDb.containers.livenessProbe.timeoutSeconds }}
+          name: {{ .Values.mariaDb.containers.name }}
           volumeMounts:
-            - mountPath: /var/lib/mysql
-              name: mysql
+            - mountPath: {{ .Values.mariaDb.containers.volumeMounts.mountPath }}
+              name: {{ .Values.mariaDb.containers.volumeMounts.name }}
       restartPolicy: {{ .Values.mariaDb.restartPolicy }}
       volumes:
-        - name: mysql
+        - name: {{ .Values.mariaDb.volumes.name }}
           persistentVolumeClaim:
-            claimName: mysql
+            claimName: {{ .Values.mariaDb.volumes.persistentVolumeClaim.claimName }}

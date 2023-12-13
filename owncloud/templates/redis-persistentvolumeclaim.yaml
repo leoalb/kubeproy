@@ -3,10 +3,10 @@ kind: PersistentVolumeClaim
 metadata:
   labels:
     appservice: redis
-  name: redis
+  name: {{ .Values.redis.volumes.persistentVolumeClaim.claimName }}
 spec:
   accessModes:
     - ReadWriteOnce
   resources:
     requests:
-      storage: 100Mi
+      storage: {{ .Values.redis.volumes.persistentVolumeClaim.storage }}

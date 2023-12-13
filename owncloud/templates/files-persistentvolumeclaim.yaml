@@ -3,10 +3,10 @@ kind: PersistentVolumeClaim
 metadata:
   labels:
     appservice: files
-  name: files
+  name: {{ .Values.owncloud.volumes.persistentVolumeClaim.claimName }}
 spec:
   accessModes:
     - ReadWriteOnce
   resources:
     requests:
-      storage: 100Mi
+      storage: {{ .Values.owncloud.volumes.persistentVolumeClaim.storage }}
