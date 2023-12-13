@@ -1,6 +1,10 @@
-# **Helm package for ownCloud**
+# **Helm package for local ownCloud**
 
 ownCloud is a file server that enables secure storage, collaboration and sharing. It is convenient to store files in the cloud, so they are available on any device and can be shared with a few clicks.
+
+The ownCloud image used has database connectors for MySQL / MariaDB.
+
+The deployment exposes ports 8080, allowing for HTTP connections and uses separate MariaDB and Redis containers. It mounts the data and MySQL data directories on the host for persistent storage.
 
 ## **TL;DR**
 ```console
@@ -40,50 +44,50 @@ The command removes all the Kubernetes components associated with the chart and 
 | Name       | Description               | Default     |
 |:-----------|:--------------------------|:------------|
 | `owncloud.replicas` | Replicas server container | `1`         |
-| `owncloud.strategy.type` | Description for value 2 | `defaultValue` |
-| `owncloud.containers.image.repository` | Description for value 3 | `defaultValue` |
-| `owncloud.containers.image.version` | Description for value 3 | `defaultValue` |
-| `owncloud.containers.image.pullPolicy` | Description for value 3 | `defaultValue` |
-| `owncloud.containers.livenessProbe.failureThreshold` | Description for value 3 | `defaultValue` |
-| `owncloud.containers.livenessProbe.periodSeconds` | Description for value 3 | `defaultValue` |
-| `owncloud.containers.livenessProbe.timeoutSeconds` | Description for value 3 | `defaultValue` |
-| `owncloud.containers.name` | Description for value 3 | `defaultValue` |
-| `owncloud.containers.ports.containerPort` | Description for value 3 | `defaultValue` |
-| `owncloud.containers.ports.protocol` | Description for value 3 | `defaultValue` |
-| `owncloud.containers.volumeMounts.mountPath` | Description for value 3 | `defaultValue` |
-| `owncloud.containers.volumeMounts.name` | Description for value 3 | `defaultValue` |
-| `owncloud.containers.env.AdminPass.name` | Description for value 3 | `defaultValue` |
-| `owncloud.containers.env.AdminPass.value` | Description for value 3 | `defaultValue` |
-| `owncloud.containers.env.AdminUser.name` | Description for value 3 | `defaultValue` |
-| `owncloud.containers.env.AdminUser.value` | Description for value 3 | `defaultValue` |
-| `owncloud.containers.env.DbHost.name` | Description for value 3 | `defaultValue` |
-| `owncloud.containers.env.DbHost.value` | Description for value 3 | `defaultValue` |
-| `owncloud.containers.env.DbName.name` | Description for value 3 | `defaultValue` |
-| `owncloud.containers.env.DbName.value` | Description for value 3 | `defaultValue` |
-| `owncloud.containers.env.DbPass.name` | Description for value 3 | `defaultValue` |
-| `owncloud.containers.env.DbPass.value` | Description for value 3 | `defaultValue` |
-| `owncloud.containers.env.DbType.name` | Description for value 3 | `defaultValue` |
-| `owncloud.containers.env.DbType.value` | Description for value 3 | `defaultValue` |
-| `owncloud.containers.env.DbUser.name` | Description for value 3 | `defaultValue` |
-| `owncloud.containers.env.DbUser.value` | Description for value 3 | `defaultValue` |
-| `owncloud.containers.env.DbDomain.name` | Description for value 3 | `defaultValue` |
-| `owncloud.containers.env.DbDomain.value` | Description for value 3 | `defaultValue` |
-| `owncloud.containers.env.MySqlUtf.name` | Description for value 3 | `defaultValue` |
-| `owncloud.containers.env.MySqlUtf.value` | Description for value 3 | `defaultValue` |
-| `owncloud.containers.env.RedisEn.name` | Description for value 3 | `defaultValue` |
-| `owncloud.containers.env.RedisEn.value` | Description for value 3 | `defaultValue` |
-| `owncloud.containers.env.RedisHost.name` | Description for value 3 | `defaultValue` |
-| `owncloud.containers.env.RedisHost.value` | Description for value 3 | `defaultValue` |
-| `owncloud.containers.env.TrustedDomains.name` | Description for value 3 | `defaultValue` |
-| `owncloud.containers.env.TrustedDomains.value` | Description for value 3 | `defaultValue` |
-| `owncloud.restartPolicy` | Description for value 3 | `defaultValue` |
-| `owncloud.volumes.name` | Description for value 3 | `defaultValue` |
-| `owncloud.volumes.persistentVolumeClaim.claimName` | Description for value 3 | `defaultValue` |
-| `owncloud.volumes.persistentVolumeClaim.storage` | Description for value 3 | `defaultValue` |
-| `owncloud.service.ports.name` | Description for value 3 | `defaultValue` |
-| `owncloud.service.ports.port` | Description for value 3 | `defaultValue` |
-| `owncloud.service.ports.targetPort` | Description for value 3 | `defaultValue` |
-| `owncloud.service.type` | Description for value 3 | `defaultValue` |
+| `owncloud.strategy.type` | Strategy type | `Recreate` |
+| `owncloud.containers.image.repository` | Owncloud image repository | `owncloud/server` |
+| `owncloud.containers.image.version` | Owncloud image version | `10.13` |
+| `owncloud.containers.image.pullPolicy` | Owncloud image pull policy | `IfNotPresent` |
+| `owncloud.containers.livenessProbe.failureThreshold` | Failure threshold of the liveness probe | `5` |
+| `owncloud.containers.livenessProbe.periodSeconds` | Period seconds of the liveness probe | `30` |
+| `owncloud.containers.livenessProbe.timeoutSeconds` | Timeout seconds of the liveness probe | `10` |
+| `owncloud.containers.name` | Containers base name | `owncloud-server` |
+| `owncloud.containers.ports.containerPort` | container listening port number | `8080` |
+| `owncloud.containers.ports.protocol` | container listening port protocol | `TCP` |
+| `owncloud.containers.volumeMounts.mountPath` | Volume mount-path | `/mnt/data` |
+| `owncloud.containers.volumeMounts.name` | Volume name | `files` |
+| `owncloud.containers.env.AdminPass.name` | Owncloud env variable | `OWNCLOUD_ADMIN_PASSWORD` |
+| `owncloud.containers.env.AdminPass.value` | Administrator password | `admin` |
+| `owncloud.containers.env.AdminUser.name` | Owncloud env variable | `OWNCLOUD_ADMIN_USERNAME` |
+| `owncloud.containers.env.AdminUser.value` | Administrator username | `admin` |
+| `owncloud.containers.env.DbHost.name` | Owncloud env variable | `OWNCLOUD_DB_HOST` |
+| `owncloud.containers.env.DbHost.value` | DB hostname | `mariadb` |
+| `owncloud.containers.env.DbName.name` | Owncloud env variable | `OWNCLOUD_DB_NAME` |
+| `owncloud.containers.env.DbName.value` | DB name | `defaultValue` |
+| `owncloud.containers.env.DbPass.name` | Owncloud env variable | `OWNCLOUD_DB_PASSWORD` |
+| `owncloud.containers.env.DbPass.value` | DB password | `owncloud` |
+| `owncloud.containers.env.DbType.name` | Owncloud env variable | `OWNCLOUD_DB_TYPE` |
+| `owncloud.containers.env.DbType.value` | DB type | `mysql` |
+| `owncloud.containers.env.DbUser.name` | Owncloud env variable | `OWNCLOUD_DB_USERNAME` |
+| `owncloud.containers.env.DbUser.value` | DB username | `owncloud` |
+| `owncloud.containers.env.DbDomain.name` | Owncloud env variable | `OWNCLOUD_DOMAIN` |
+| `owncloud.containers.env.DbDomain.value` | Owncloud domain | `localhost:8080` |
+| `owncloud.containers.env.MySqlUtf.name` | Owncloud env variable | `OWNCLOUD_MYSQL_UTF8MB4` |
+| `owncloud.containers.env.MySqlUtf.value` | Mysql character set enabled | `true` |
+| `owncloud.containers.env.RedisEn.name` | Owncloud env variable | `OWNCLOUD_REDIS_ENABLED` |
+| `owncloud.containers.env.RedisEn.value` | Boolean if redis is enabled | `true` |
+| `owncloud.containers.env.RedisHost.name` | Owncloud env variable | `OWNCLOUD_REDIS_HOST` |
+| `owncloud.containers.env.RedisHost.value` | Redis host name | `redis` |
+| `owncloud.containers.env.TrustedDomains.name` | Owncloud env variable | `OWNCLOUD_TRUSTED_DOMAINS` |
+| `owncloud.containers.env.TrustedDomains.value` | Trusted domains | `localhost` |
+| `owncloud.restartPolicy` | Restart policy | `Always` |
+| `owncloud.volumes.name` | Volume name | `files` |
+| `owncloud.volumes.persistentVolumeClaim.claimName` | Description for value 3 | `files` |
+| `owncloud.volumes.persistentVolumeClaim.storage` | Description for value 3 | `100` |
+| `owncloud.service.ports.name` | Service port name  | `service-owncloud` |
+| `owncloud.service.ports.port` | Service port number | `8080` |
+| `owncloud.service.ports.targetPort` | Service target port number  | `8080` |
+| `owncloud.service.type` | Service type | `LoadBalancer` |
 
 
 
